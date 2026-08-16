@@ -4,7 +4,23 @@ from discord.ext import commands
 from google import genai
 from gtts import gTTS
 import config
+import threading
+from flask import Flask
 
+app = Flask('')
+
+
+@app.route('/')
+def home():
+  return 'Bot is alive!'
+
+
+def run():
+  app.run(host='0.0.0.0', port=8080)
+
+
+# ダミーサーバーを別スレッドで起動
+threading.Thread(target=run).start()
 # Gemini APIの初期化
 client = genai.Client(api_key=config.GEMINI_API_KEY)
 
