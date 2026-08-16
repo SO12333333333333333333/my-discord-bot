@@ -58,7 +58,44 @@ async def leave_command(interaction: discord.Interaction):
 # 質問＆読み上げコマンド (/q)
 @bot.tree.command(name="q", description="ツンデレ幼馴染に質問する（クラウドTTS読み上げ）")
 async def q_command(interaction: discord.Interaction, question: str):
+    import os
+import discord
+from discord import app_commands
+import google.generativeai as genai
+
+# トークン・APIキー設定
+DISCORD_TOKEN = os.environ.get("DISCORD_TOKEN")
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+
+genai.configure(api_key=GEMINI_API_KEY)
+model = genai.GenerativeModel("gemini-3.5-flash-lite")
+
+intents = discord.Intents.default()
+client = discord.Client(intents=intents)
+tree = app_commands.CommandTree(client)
+
+@client.event
+async def on_ready():
+    await tree.sync()
+    print(f"Logged in as {client.user}")
+
+# /q コマンドの処理
+@tree.command(name="q", description="Geminiに質問します")
+async def q(interaction: discord.Interaction, question: str):
+    # ① 3秒タイムアウトを防ぐため、最初に「考え中...」状態にする
     await interaction.response.defer()
+
+    try:
+        # Geminiで回答を生成
+        response = model.generate_content(question)
+        
+        # ② defer() を使った場合は followup.send で返信する
+        await interaction.followup.send(response.text)
+    except Exception as e:
+        await interaction.followup.send(f"エラーが発生しました: {e}")
+
+client.run(DISCORD_TOKEN)
+ 　 await interaction.response.defer()
 
     # 自動VC参加
     if interaction.user.voice:
