@@ -74,7 +74,7 @@ async def q_command(interaction: discord.Interaction, question: str):
 
         # Gemini 2.5 Flashでテキスト生成
         response = client.models.generate_content(
-            model="gemini-1.5-flash-latest",
+            model="gemini-2.5-flash",
             contents=full_prompt,
         )
         reply_text = response.text
