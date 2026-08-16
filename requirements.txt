@@ -1,7 +1,4 @@
-discord.py[voice]
+discord.py
 google-genai
 gTTS
-discord.py[voice]
-google-genai
-gTTS
-Flask
+flask
